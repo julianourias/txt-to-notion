@@ -17,6 +17,11 @@ class NotionFileCreatorWidget(QWidget):
         self.path_dropdown = QComboBox()
         layout.addWidget(self.path_label)
         layout.addWidget(self.path_dropdown)
+        
+        # Refresh Paths Button
+        self.refresh_paths_button = QPushButton("Refresh Paths")
+        self.refresh_paths_button.clicked.connect(self.populate_path_dropdown)
+        layout.addWidget(self.refresh_paths_button)
 
         # Create Files Button
         self.create_files_button = QPushButton("Create Files on Notion")
@@ -29,6 +34,8 @@ class NotionFileCreatorWidget(QWidget):
 
     def populate_path_dropdown(self):
         paths = self.folder_repository.get_paths()
+        self.path_dropdown.clear()
+        
         for path in paths:
             self.path_dropdown.addItem(path[0])
 
@@ -39,4 +46,5 @@ class NotionFileCreatorWidget(QWidget):
             self.file_service.create_files(selected_path)
             QMessageBox.information(self, "Success", f"Files created successfully on Notion")
         except Exception as e:
+            print(e)
             QMessageBox.warning(self, "Error", f"Failed to create files on Notion")

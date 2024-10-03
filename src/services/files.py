@@ -4,29 +4,50 @@ import os
 
 from repositories.configs import ConfigRepository
 from repositories.files import FileRepository
+from repositories.folders import FolderRepository
 
 
 class ServiceFile:
     def __init__(self) -> None:
         self.config_repository = ConfigRepository()
         self.headers = self.config_repository.get_headers()
-        self.notion_id = self.config_repository.get_notion_id()
         
+        self.folder_repository = FolderRepository()
         self.file_repository = FileRepository()
+        
+    def _get_paragraphs(self, content):
+        paragraphs = []
+        batch_size = 2000
+        
+        for i in range(0, len(content), batch_size):
+            paragraph = {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "content": str(content[i:i+batch_size])
+                            }
+                        }
+                    ],
+                    "color": "default"
+                }
+            }
+            
+            paragraphs.append(paragraph)
+            
+        return paragraphs
     
-    def create_file_on_notion(self, title, content):
+    def create_file_on_notion(self, notion_id, title, content):
         data = {
             "parent": { 
                 "type": "page_id",
-                "page_id": self.notion_id  
+                "page_id": notion_id  
             },
             "icon": {
-                "emoji": "🥬"
-            },
-            "cover": {
-                "external": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Tuscankale.jpg"
-                }
+                "emoji": "🗒️"
             },
             "properties": {
                 "title": [
@@ -37,23 +58,7 @@ class ServiceFile:
                     }
                 ]
             },
-            "children": [
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": str(content)
-                                }
-                            }
-                        ],
-                        "color": "default"
-                    }
-                }
-            ]
+            "children": self._get_paragraphs(content)
         }
 
         response = requests.post('https://api.notion.com/v1/pages', headers=self.headers, json=data)
@@ -62,13 +67,14 @@ class ServiceFile:
     
     def create_files(self, path):
         txt_files = glob.glob(os.path.join(path, '*.txt'))
+        notion_id = self.folder_repository.get_folder_notion_id_by_path(path)
 
         try:
             for txt_file in txt_files:
                 with open(txt_file, 'r', encoding='utf-8') as file:
                     content = file.read()
                 
-                response = self.create_file_on_notion(os.path.basename(txt_file), content)
+                response = self.create_file_on_notion(notion_id, os.path.basename(txt_file), content)
                 
                 print(response)
 
