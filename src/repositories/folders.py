@@ -41,10 +41,3 @@ class FolderRepository:
     def get_folder_by_path(self, path):
         self.cursor.execute('SELECT * FROM pasta WHERE caminho = ?', (path,))
         return self.cursor.fetchone()
-    
-    def get_folder_notion_id_by_path(self, path):
-        self.cursor.execute('SELECT notion_id FROM pasta WHERE caminho = ?', (path,))
-        row = self.cursor.fetchone()
-        if len(row) > 0:
-            return row[0]
-        return None

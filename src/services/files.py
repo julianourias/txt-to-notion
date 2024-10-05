@@ -40,11 +40,11 @@ class ServiceFile:
             
         return paragraphs
     
-    def create_file_on_notion(self, notion_id, title, content):
+    def _create_file_on_notion(self, folder_notion_id, title, content):
         data = {
             "parent": { 
                 "type": "page_id",
-                "page_id": notion_id  
+                "page_id": folder_notion_id  
             },
             "icon": {
                 "emoji": "🗒️"
@@ -65,18 +65,35 @@ class ServiceFile:
         
         return response
     
-    def create_file(self, txt_file, notion_id):
+    def create_file(self, txt_file, folder_notion_id, folder_id):
         try:
+            file_id = self.file_repository.get_file_id_by_pasta_id_and_nome(folder_id, os.path.basename(txt_file))
+            
             with open(txt_file, 'r', encoding='utf-8') as file:
                 content = file.read()
             
-            response = self.create_file_on_notion(notion_id, os.path.basename(txt_file), content)
+            if not file_id:
+                response = self._create_file_on_notion(folder_notion_id, os.path.basename(txt_file), content)
+                
+                print(response.json())
             
-            print(response.json())
+            else:
+                # response = self._patch_file_on_notion(folder_notion_id, os.path.basename(txt_file), content)
+                
+                # print(response.json())
+                print('File already exists')
 
             if response.status_code == 200:
-                self.file_repository.insert_file(os.path.basename(txt_file), response.json()['id'], response.json()['last_edited_time'], 1)
+                self.file_repository.insert_file(os.path.basename(txt_file), response.json()['id'], response.json()['last_edited_time'], folder_id)
             else:
                 raise Exception('Failed to create file on Notion')
         except Exception as e:
             return e
+        
+    # TODO: Implement patch_file_on_notion method
+    def _patch_file_on_notion(self, folder_notion_id, title, content):
+        pass
+    
+    # TODO: Implement patch_file method
+    def patch_file(self, file_id, txt_file, folder_notion_id):
+        pass

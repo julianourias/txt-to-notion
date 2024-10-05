@@ -49,14 +49,14 @@ class NotionFileCreatorWidget(QWidget):
         selected_path = self.path_dropdown.currentText()
         
         txt_files = glob.glob(os.path.join(selected_path, '*.txt'))
-        notion_id = self.folder_repository.get_folder_notion_id_by_path(selected_path)
+        folder_id, folder_path, folder_notion_id, config_id = self.folder_repository.get_folder_by_path(selected_path)
 
         for txt_file in txt_files:
             try:
                 self.current_file_label.setText(f"Creating {os.path.basename(txt_file)} file on notion")
                 QApplication.processEvents()  # Force GUI update
                 
-                self.file_service.create_file(txt_file, notion_id)
+                self.file_service.create_file(txt_file, folder_notion_id, folder_id)
                 
                 self.current_file_label.setText(f"|")
                 QApplication.processEvents()  # Force GUI update

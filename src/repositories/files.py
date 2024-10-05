@@ -26,6 +26,14 @@ class FileRepository:
             VALUES (?, ?, ?, ?)
         ''', (name, notion_id, updated_at, folder_id))
         self.conn.commit()
+        
+    def update_file(self, file_id, updated_at):
+        self.cursor.execute('''
+            UPDATE arquivo
+            SET data_atualizacao = ?
+            WHERE id = ?
+        ''', (updated_at, file_id))
+        self.conn.commit()
     
     def get_files(self):
         self.cursor.execute('SELECT * FROM arquivo')
@@ -34,3 +42,11 @@ class FileRepository:
     def get_file(self, file_id):
         self.cursor.execute('SELECT * FROM arquivo WHERE id = ?', (file_id,))
         return self.cursor.fetchone()
+    
+    def get_file_id_by_pasta_id_and_nome(self, folder_id, name):
+        self.cursor.execute('SELECT id FROM arquivo WHERE pasta_id = ? AND nome = ?', (folder_id, name))
+        row = self.cursor.fetchone()
+        if row:
+            return row[0]
+        else:
+            return None
