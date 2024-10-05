@@ -42,7 +42,8 @@ class FolderService:
     def create_folder(self, path):
         try:
             response = self.create_folder_on_notion(path)  
-            print(response)
+            
+            print(response.json())
 
             if response.status_code == 200:
                 self.folder_repository.insert_folder(path, response.json()['id'], self.config_id)

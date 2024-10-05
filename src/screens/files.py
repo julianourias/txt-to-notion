@@ -1,5 +1,7 @@
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox, QComboBox
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox, QComboBox
+import glob
+import os
 
 from services.files import ServiceFile
 from repositories.folders import FolderRepository
@@ -27,6 +29,10 @@ class NotionFileCreatorWidget(QWidget):
         self.create_files_button = QPushButton("Create Files on Notion")
         self.create_files_button.clicked.connect(self.create_files)
         layout.addWidget(self.create_files_button)
+        
+        # Current File Label
+        self.current_file_label = QLabel("|")
+        layout.addWidget(self.current_file_label)
 
         self.setLayout(layout)
 
@@ -41,10 +47,22 @@ class NotionFileCreatorWidget(QWidget):
 
     def create_files(self):
         selected_path = self.path_dropdown.currentText()
+        
+        txt_files = glob.glob(os.path.join(selected_path, '*.txt'))
+        notion_id = self.folder_repository.get_folder_notion_id_by_path(selected_path)
 
-        try:
-            self.file_service.create_files(selected_path)
-            QMessageBox.information(self, "Success", f"Files created successfully on Notion")
-        except Exception as e:
-            print(e)
-            QMessageBox.warning(self, "Error", f"Failed to create files on Notion")
+        for txt_file in txt_files:
+            try:
+                self.current_file_label.setText(f"Creating {os.path.basename(txt_file)} file on notion")
+                QApplication.processEvents()  # Force GUI update
+                
+                self.file_service.create_file(txt_file, notion_id)
+                
+                self.current_file_label.setText(f"|")
+                QApplication.processEvents()  # Force GUI update
+            except Exception as e:
+                print(e)
+                QMessageBox.warning(self, "Error", f"Failed to create {os.path.basename(txt_file)} file on notion")
+            
+        QMessageBox.information(self, "Success", f"Files created successfully on Notion")
+            

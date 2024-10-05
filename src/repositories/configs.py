@@ -19,6 +19,9 @@ class ConfigRepository:
         self.conn.commit()
         
     def insert_config(self, notion_key, notion_id):
+        self.cursor.execute('DELETE FROM configuracao')
+        self.conn.commit()
+        
         self.cursor.execute('''
             INSERT INTO configuracao (notion_key, notion_id)
             VALUES (?, ?)
@@ -31,20 +34,34 @@ class ConfigRepository:
     
     def get_config_id(self):
         self.cursor.execute('SELECT id FROM configuracao')
-        return self.cursor.fetchone()[0]
+        row = self.cursor.fetchone()
+        if row:
+            return row[0]
+        else:
+            return None
     
     def get_notion_id(self):
         self.cursor.execute('SELECT notion_id FROM configuracao ORDER BY id DESC LIMIT 1')
-        return self.cursor.fetchone()[0]
+        row = self.cursor.fetchone()
+        if row:
+            return row[0]
+        else:
+            return None
     
     def get_headers(self):
         self.cursor.execute('SELECT notion_key FROM configuracao')
-        notion_key = self.cursor.fetchone()[0]
         
-        headers = {
-            'Authorization': f'Bearer {notion_key}',
-            'Content-Type': 'application/json',
-            'Notion-Version': '2022-06-28'
-        }
+        row = self.cursor.fetchone()
         
-        return headers
+        if row:
+            notion_key = row[0]
+            
+            headers = {
+                'Authorization': f'Bearer {notion_key}',
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28'
+            }
+            
+            return headers
+        else:
+            return None

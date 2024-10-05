@@ -65,22 +65,18 @@ class ServiceFile:
         
         return response
     
-    def create_files(self, path):
-        txt_files = glob.glob(os.path.join(path, '*.txt'))
-        notion_id = self.folder_repository.get_folder_notion_id_by_path(path)
-
+    def create_file(self, txt_file, notion_id):
         try:
-            for txt_file in txt_files:
-                with open(txt_file, 'r', encoding='utf-8') as file:
-                    content = file.read()
-                
-                response = self.create_file_on_notion(notion_id, os.path.basename(txt_file), content)
-                
-                print(response)
+            with open(txt_file, 'r', encoding='utf-8') as file:
+                content = file.read()
+            
+            response = self.create_file_on_notion(notion_id, os.path.basename(txt_file), content)
+            
+            print(response.json())
 
-                if response.status_code == 200:
-                    self.file_repository.insert_file(os.path.basename(txt_file), response.json()['id'], response.json()['last_edited_time'], 1)
-                else:
-                    raise Exception('Failed to create file on Notion')
+            if response.status_code == 200:
+                self.file_repository.insert_file(os.path.basename(txt_file), response.json()['id'], response.json()['last_edited_time'], 1)
+            else:
+                raise Exception('Failed to create file on Notion')
         except Exception as e:
             return e
