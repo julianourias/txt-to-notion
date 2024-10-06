@@ -43,10 +43,6 @@ class FileRepository:
         self.cursor.execute('SELECT * FROM arquivo WHERE id = ?', (file_id,))
         return self.cursor.fetchone()
     
-    def get_file_id_by_pasta_id_and_nome(self, folder_id, name):
-        self.cursor.execute('SELECT id FROM arquivo WHERE pasta_id = ? AND nome = ?', (folder_id, name))
-        row = self.cursor.fetchone()
-        if row:
-            return row[0]
-        else:
-            return None
+    def get_file_by_pasta_id_and_nome(self, folder_id, name):
+        self.cursor.execute('SELECT * FROM arquivo WHERE pasta_id = ? AND nome = ?', (folder_id, name))
+        return self.cursor.fetchone()

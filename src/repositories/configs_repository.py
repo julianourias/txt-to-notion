@@ -19,14 +19,21 @@ class ConfigRepository:
         self.conn.commit()
         
     def insert_config(self, notion_key, notion_id):
-        self.cursor.execute('DELETE FROM configuracao')
-        self.conn.commit()
+        config = self.get_config()
         
-        self.cursor.execute('''
-            INSERT INTO configuracao (notion_key, notion_id)
-            VALUES (?, ?)
-        ''', (notion_key, notion_id))
-        self.conn.commit()
+        if config:
+            self.cursor.execute('''
+                UPDATE configuracao
+                SET notion_key = ?,
+                    notion_id = ?
+            ''', (notion_key, notion_id))
+            self.conn.commit()
+        else:
+            self.cursor.execute('''
+                INSERT INTO configuracao (notion_key, notion_id)
+                VALUES (?, ?)
+            ''', (notion_key, notion_id))
+            self.conn.commit()
         
     def get_config(self):
         self.cursor.execute('SELECT notion_key, notion_id FROM configuracao ORDER BY id DESC LIMIT 1')

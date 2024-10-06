@@ -1,17 +1,21 @@
 import sys
 
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTabWidget
+from PyQt6.QtGui import QIcon
 
-from screens.configs import ConfigEntryWidget
-from screens.folders import AddPastaWidget
-from screens.files import NotionFileCreatorWidget
+from screens.configs_screen import ConfigEntryWidget
+from screens.folders_screen import AddPastaWidget
+from screens.files_screen import NotionFileCreatorWidget
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Notion Data Manager")
+        self.setWindowTitle("TXT to Notion")
         self.setGeometry(100, 100, 400, 300)
+        
+        # Set application icon
+        self.setWindowIcon(QIcon('src\\assets\\file.svg'))
 
         layout = QVBoxLayout()
 
@@ -21,8 +25,13 @@ class MainWindow(QWidget):
         self.notion_file_creator_widget = NotionFileCreatorWidget()
 
         self.tabs.addTab(self.data_entry_widget, "Configuração")
-        self.tabs.addTab(self.add_pasta_widget, "Pastas")
-        self.tabs.addTab(self.notion_file_creator_widget, "Arquivos")
+        combined_widget = QWidget()
+        combined_layout = QVBoxLayout()
+        combined_layout.addWidget(self.add_pasta_widget)
+        combined_layout.addWidget(self.notion_file_creator_widget)
+        combined_widget.setLayout(combined_layout)
+
+        self.tabs.addTab(combined_widget, "Sincronização")
 
         layout.addWidget(self.tabs)
         self.setLayout(layout)
