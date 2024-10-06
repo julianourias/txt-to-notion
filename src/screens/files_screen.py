@@ -26,7 +26,7 @@ class NotionFileCreatorWidget(QWidget):
         folder_icon = QIcon(QPixmap("src\\assets\\refresh.svg"))
         self.refresh_folders_button.setIcon(folder_icon)
         self.refresh_folders_button.setFixedWidth(30)
-        self.refresh_folders_button.clicked.connect(self.populate_path_dropdown)
+        self.refresh_folders_button.clicked.connect(self._populate_path_dropdown)
 
         path_layout = QHBoxLayout()
         path_layout.addWidget(self.path_dropdown)
@@ -36,7 +36,7 @@ class NotionFileCreatorWidget(QWidget):
 
         # Create Files Button
         self.create_files_button = QPushButton("Sincronizar Arquivos")
-        self.create_files_button.clicked.connect(self.create_files)
+        self.create_files_button.clicked.connect(self._sync_files)
         layout.addWidget(self.create_files_button)
         
         # Current File Label
@@ -45,16 +45,16 @@ class NotionFileCreatorWidget(QWidget):
 
         self.setLayout(layout)
 
-        self.populate_path_dropdown()
+        self._populate_path_dropdown()
 
-    def populate_path_dropdown(self):
+    def _populate_path_dropdown(self):
         paths = self.folder_repository.get_paths()
         self.path_dropdown.clear()
         
         for path in paths:
             self.path_dropdown.addItem(path[0])
 
-    def create_files(self):
+    def _sync_files(self):
         selected_path = self.path_dropdown.currentText()
         
         txt_files = glob.glob(os.path.join(selected_path, '*.txt'))
@@ -65,7 +65,7 @@ class NotionFileCreatorWidget(QWidget):
                 self.current_file_label.setText(f"Sincronizando arquivo {os.path.basename(txt_file)} ao Notion...")
                 QApplication.processEvents()  # Force GUI update
                 
-                self.file_service.create_file(txt_file, folder_notion_id, folder_id)
+                self.file_service.sync_file(txt_file, folder_notion_id, folder_id)
                 
                 self.current_file_label.setText(f"")
                 QApplication.processEvents()  # Force GUI update
