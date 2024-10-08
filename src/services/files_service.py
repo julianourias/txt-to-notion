@@ -7,6 +7,8 @@ from repositories.configs_repository import ConfigRepository
 from repositories.files_repository import FileRepository
 from repositories.folders_repository import FolderRepository
 
+NOTION_API_URL = "https://api.notion.com/v1/"
+
 
 class ServiceFile:
     def __init__(self) -> None:
@@ -60,12 +62,12 @@ class ServiceFile:
             "children": self._get_paragraphs(content)
         }
 
-        response = requests.post('https://api.notion.com/v1/pages', headers=self.config_repository.get_headers(), json=data)
+        response = requests.post(f'{NOTION_API_URL}/pages', headers=self.config_repository.get_headers(), json=data)
         
         return response
         
     def _get_file_from_notion(self, file_notion_id):
-        response = requests.get(f'https://api.notion.com/v1/pages/{file_notion_id}', headers=self.config_repository.get_headers())
+        response = requests.get(f'{NOTION_API_URL}/pages/{file_notion_id}', headers=self.config_repository.get_headers())
         
         return response.json()
         
@@ -74,18 +76,18 @@ class ServiceFile:
         
         for block in blocks['results']:
             if block['type'] == 'paragraph':
-                requests.delete(f'https://api.notion.com/v1/blocks/{block["id"]}', headers=self.config_repository.get_headers())
+                requests.delete(f'{NOTION_API_URL}/blocks/{block["id"]}', headers=self.config_repository.get_headers())
         
         data = {
             "children": self._get_paragraphs(content)
         }
 
-        response = requests.patch(f'https://api.notion.com/v1/blocks/{file_notion_id}/children', headers=self.config_repository.get_headers(), json=data)
+        response = requests.patch(f'{NOTION_API_URL}/blocks/{file_notion_id}/children', headers=self.config_repository.get_headers(), json=data)
         
         return response
     
     def _get_all_file_blocks(self, file_notion_id):
-        response = requests.get(f'https://api.notion.com/v1/blocks/{file_notion_id}/children?page_size=100', headers=self.config_repository.get_headers())
+        response = requests.get(f'{NOTION_API_URL}/blocks/{file_notion_id}/children?page_size=100', headers=self.config_repository.get_headers())
         
         return response.json()
     
