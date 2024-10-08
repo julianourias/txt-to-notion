@@ -10,6 +10,7 @@ from repositories.folders_repository import FolderRepository
 class NotionFileCreatorWidget(QWidget):
     def __init__(self):
         super().__init__()
+        
         self.file_service = ServiceFile()
         self.folder_repository = FolderRepository()
 
@@ -23,17 +24,18 @@ class NotionFileCreatorWidget(QWidget):
         # Refresh Paths Button
         self.refresh_folders_button = QPushButton()
         
+        # Set button Icon
         folder_icon = QIcon(QPixmap("src\\assets\\refresh.svg"))
         self.refresh_folders_button.setIcon(folder_icon)
         self.refresh_folders_button.setFixedWidth(30)
         self.refresh_folders_button.clicked.connect(self._populate_path_dropdown)
 
+        # Add key input and button in row
         path_layout = QHBoxLayout()
         path_layout.addWidget(self.path_dropdown)
         path_layout.addWidget(self.refresh_folders_button)
         layout.addLayout(path_layout)
         
-
         # Create Files Button
         self.create_files_button = QPushButton("Sincronizar Arquivos")
         self.create_files_button.clicked.connect(self._sync_files)

@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QHBoxLayout, QStyle
+from PyQt6.QtGui import QIcon, QPixmap
 
 from repositories.configs_repository import ConfigRepository
-from PyQt6.QtGui import QIcon, QPixmap
 
 
 class ConfigEntryWidget(QWidget):
@@ -29,31 +29,32 @@ class ConfigEntryWidget(QWidget):
         self.toggle_visibility_button = QPushButton()
         self.toggle_visibility_button.setCheckable(True)
         
+        # Set button Icon
         eye_icon = QIcon(QPixmap("src\\assets\\eye.svg"))
         self.toggle_visibility_button.setIcon(eye_icon)
-        self.toggle_visibility_button.toggled.connect(self.toggle_password_visibility)
+        self.toggle_visibility_button.toggled.connect(self._toggle_password_visibility)
 
+        # Add key input and button in row
         key_layout = QHBoxLayout()
         key_layout.addWidget(self.notion_key_input)
         key_layout.addWidget(self.toggle_visibility_button)
-
         layout.addLayout(key_layout)
 
         # Save Button
         self.save_button = QPushButton("Salvar")
-        self.save_button.clicked.connect(self.save_config)
+        self.save_button.clicked.connect(self._save_config)
         layout.addWidget(self.save_button)
 
         self.setLayout(layout)
-        self.load_existing_config()
+        self._load_existing_config()
 
-    def toggle_password_visibility(self, checked):
+    def _toggle_password_visibility(self, checked):
         if checked:
             self.notion_key_input.setEchoMode(QLineEdit.EchoMode.Normal)
         else:
             self.notion_key_input.setEchoMode(QLineEdit.EchoMode.Password)
 
-    def load_existing_config(self):
+    def _load_existing_config(self):
         config = self.repository.get_config()
 
         if config:
@@ -61,7 +62,7 @@ class ConfigEntryWidget(QWidget):
             self.notion_key_input.setText(notion_key)
             self.notion_id_input.setText(notion_id)
 
-    def save_config(self):
+    def _save_config(self):
         notion_key = self.notion_key_input.text()
         notion_url = self.notion_id_input.text()
 

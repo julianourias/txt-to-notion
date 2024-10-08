@@ -30,14 +30,6 @@ class FolderRepository:
         self.cursor.execute('SELECT caminho FROM pasta')
         return self.cursor.fetchall()
     
-    def get_folders(self):
-        self.cursor.execute('SELECT * FROM pasta')
-        return self.cursor.fetchall() 
-    
-    def get_folder_by_id(self, folder_id):
-        self.cursor.execute('SELECT * FROM pasta WHERE id = ?', (folder_id,))
-        return self.cursor.fetchone()
-    
     def get_folder_by_path(self, path):
         self.cursor.execute('SELECT * FROM pasta WHERE caminho = ?', (path,))
         return self.cursor.fetchone()

@@ -35,14 +35,6 @@ class FileRepository:
         ''', (updated_at, file_id))
         self.conn.commit()
     
-    def get_files(self):
-        self.cursor.execute('SELECT * FROM arquivo')
-        return self.cursor.fetchall()
-    
-    def get_file(self, file_id):
-        self.cursor.execute('SELECT * FROM arquivo WHERE id = ?', (file_id,))
-        return self.cursor.fetchone()
-    
     def get_file_by_pasta_id_and_nome(self, folder_id, name):
         self.cursor.execute('SELECT * FROM arquivo WHERE pasta_id = ? AND nome = ?', (folder_id, name))
         return self.cursor.fetchone()

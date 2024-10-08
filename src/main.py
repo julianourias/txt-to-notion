@@ -17,16 +17,20 @@ class MainWindow(QWidget):
         # Set application icon
         self.setWindowIcon(QIcon('src\\assets\\file.svg'))
 
-        layout = QVBoxLayout()
-
+        layout = QVBoxLayout() 
         self.tabs = QTabWidget()
+        
+        # Add config screen no a tab
         self.data_entry_widget = ConfigEntryWidget()
-        self.add_pasta_widget = AddPastaWidget()
-        self.notion_file_creator_widget = NotionFileCreatorWidget()
-
         self.tabs.addTab(self.data_entry_widget, "Configuração")
+        
+        # Add folder and file screen on the same tab
         combined_widget = QWidget()
         combined_layout = QVBoxLayout()
+        
+        self.add_pasta_widget = AddPastaWidget()
+        self.notion_file_creator_widget = NotionFileCreatorWidget()
+        
         combined_layout.addWidget(self.add_pasta_widget)
         combined_layout.addWidget(self.notion_file_creator_widget)
         combined_widget.setLayout(combined_layout)
@@ -36,6 +40,7 @@ class MainWindow(QWidget):
         layout.addWidget(self.tabs)
         self.setLayout(layout)
 
+# Init PyQT6 application
 app = QApplication(sys.argv)
 main_window = MainWindow()
 main_window.show()

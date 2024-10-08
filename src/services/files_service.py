@@ -1,5 +1,4 @@
 import requests
-import glob
 import os
 from difflib import HtmlDiff
 from datetime import datetime, timedelta
@@ -12,7 +11,6 @@ from repositories.folders_repository import FolderRepository
 class ServiceFile:
     def __init__(self) -> None:
         self.config_repository = ConfigRepository()
-        
         self.folder_repository = FolderRepository()
         self.file_repository = FileRepository()
         
@@ -100,7 +98,7 @@ class ServiceFile:
                 rich_text_list = block['paragraph']['rich_text']
                 
                 if len(rich_text_list) > 0:
-                    content += rich_text_list[0]['text']['content']
+                    content += f"{rich_text_list[0]['text']['content']}\n"
         
         return content
     
@@ -117,11 +115,15 @@ class ServiceFile:
                 
                 file_notion = self._get_file_from_notion(file_notion_id)
                 
-                if datetime.fromtimestamp(os.path.getmtime(txt_file)) > datetime.strptime(file_data_atualizacao, '%Y-%m-%dT%H:%M:%S.%fZ'):
+                last_edited_notion = datetime.strptime(file_notion['last_edited_time'], '%Y-%m-%dT%H:%M:%S.%fZ') - timedelta(hours=3)
+                last_edited_locally = datetime.fromtimestamp(os.path.getmtime(txt_file))
+                
+                last_file_sync = datetime.strptime(file_data_atualizacao, '%Y-%m-%dT%H:%M:%S.%fZ')
+                
+                if last_edited_locally > last_file_sync:
                     print('File has been modified')
                     
-                    
-                    if (datetime.strptime(file_notion['last_edited_time'], '%Y-%m-%dT%H:%M:%S.%fZ') - timedelta(hours=3)) > datetime.strptime(file_data_atualizacao, '%Y-%m-%dT%H:%M:%S.%fZ'):
+                    if last_edited_notion > last_file_sync:
                         print('File has been modified on Notion and locally')
                         d = HtmlDiff()
                         
@@ -134,7 +136,7 @@ class ServiceFile:
                         
                         raise Exception('Arquivo possui modificações não baixadas do notion, faça o merge de acordo com o arquivo gerado e envie novamente as atualizações')
                     else:
-                        print('File has not been modified on Notion')
+                        print('File has been modified only locally')
                         response = self._patch_file_on_notion(file_notion_id, content)
                         
                         print(response.json())
@@ -143,7 +145,7 @@ class ServiceFile:
                             self.file_repository.update_file(file_id, datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ'))
                         else:
                             raise Exception('Failed to update file on Notion')
-                elif (datetime.strptime(file_notion['last_edited_time'], '%Y-%m-%dT%H:%M:%S.%fZ') - timedelta(hours=3)) > datetime.strptime(file_data_atualizacao, '%Y-%m-%dT%H:%M:%S.%fZ'):
+                elif last_edited_notion > last_file_sync:
                     print('File has been modified on Notion')
                     content_notion = self._get_content_notion(file_notion_id) 
                     
@@ -156,7 +158,7 @@ class ServiceFile:
                     print('File has not been modified')
             
             else:
-                print('File does not exist')
+                print('File does not exist on Notion')
                 response = self._create_file_on_notion(folder_notion_id, os.path.basename(txt_file), content)
                 
                 print(response.json())
@@ -165,6 +167,7 @@ class ServiceFile:
                     self.file_repository.insert_file(os.path.basename(txt_file), response.json()['id'], datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ'), folder_id)
                 else:
                     raise Exception('Failed to create file on Notion')
+        
         except Exception as e:
             print(e)
             raise e

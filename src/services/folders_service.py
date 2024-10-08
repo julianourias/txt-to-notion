@@ -1,6 +1,4 @@
 import requests
-import glob
-import os
 
 from repositories.configs_repository import ConfigRepository
 from repositories.folders_repository import FolderRepository

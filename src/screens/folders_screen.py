@@ -1,16 +1,15 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QFileDialog, QHBoxLayout
+from PyQt6.QtGui import QIcon, QPixmap
 
 from repositories.folders_repository import FolderRepository
-from repositories.configs_repository import ConfigRepository
 from services.folders_service import FolderService
-from PyQt6.QtGui import QIcon, QPixmap
 
 class AddPastaWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        self.repository = FolderRepository()
         self.service = FolderService()
+        self.repository = FolderRepository()
 
         layout = QVBoxLayout()
 
@@ -22,10 +21,12 @@ class AddPastaWidget(QWidget):
         # Button to open file explorer
         self.open_file_explorer_button = QPushButton()
         
+        # Set button Icon
         folder_icon = QIcon(QPixmap("src\\assets\\folder.svg"))
         self.open_file_explorer_button.setIcon(folder_icon)
-        self.open_file_explorer_button.clicked.connect(self.open_file_explorer)
+        self.open_file_explorer_button.clicked.connect(self._open_file_explorer)
 
+        # Add key input and button in row
         path_layout = QHBoxLayout()
         path_layout.addWidget(self.path_input)
         path_layout.addWidget(self.open_file_explorer_button)
@@ -33,17 +34,17 @@ class AddPastaWidget(QWidget):
         
         # Save Button
         self.save_button = QPushButton("Adicionar Pasta")
-        self.save_button.clicked.connect(self.save_data)
+        self.save_button.clicked.connect(self._save_data)
         layout.addWidget(self.save_button)
 
         self.setLayout(layout)
 
-    def open_file_explorer(self):
+    def _open_file_explorer(self):
         directory = QFileDialog.getExistingDirectory(self, "Selecione a Pasta")
         if directory:
             self.path_input.setText(directory)
 
-    def save_data(self):
+    def _save_data(self):
         path = self.path_input.text()
 
         if not path:
