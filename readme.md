@@ -1,18 +1,28 @@
-# For Developer
+# Para Desenvolvedor
 
-### Project config
+### Configurar ambiente virtual Python
+```
+python -m venv venv
+```
+
+### Instalar depedências
 
 ```
 pip install -r requirements.txt
 ```
 
-### Project run
+### Executar Projeto
 
 ```
 python .\src\main.py
 ```
 
-### Generate a dist (.exe)
+### Instalar pyinstaller para gerar dist
+```
+pip install -U pyinstaller
+```
+
+### Gerar um dist (.exe)
 ```
 pyinstaller --add-data="assets:assets" .\src\main.py
 ```
@@ -20,14 +30,14 @@ pyinstaller --add-data="assets:assets" .\src\main.py
 <br>
 <br>
 
-# For User
+# Para Usuário
 
-### Create a Notion Integration 
+### Criar uma Integração do Notion 
 https://www.notion.so/profile/integrations/form/new-integration
 
-### Add Integration to your page
+### Adicionar Integração à sua página
 https://developers.notion.com/docs/create-a-notion-integration#give-your-integration-page-permissions
 
-### Run app and config
-- Add the Notion Key from integration on the app 
-- Add the Page URL (or Page ID) on the app
+### Executar app e configurar
+- Adicione a Chave do Notion da integração no app 
+- Adicione a URL da Página (ou ID da Página) no app
