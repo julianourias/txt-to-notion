@@ -3,3 +3,4 @@
 __pycache__
 local.db
 /build
+*diff.html

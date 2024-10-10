@@ -133,7 +133,7 @@ class ServiceFile:
                         
                         html_diff = d.make_file(content_notion.splitlines(), content.splitlines())
                         
-                        with open("diff.html", "w", encoding="utf-8") as f:
+                        with open(".\_internal\diffs\diff.html", "w", encoding="utf-8") as f:
                             f.write(html_diff)
                         
                         raise Exception('Arquivo possui modificações não baixadas do notion, faça o merge de acordo com o arquivo gerado e envie novamente as atualizações')

@@ -24,7 +24,7 @@ pip install -U pyinstaller
 
 ### Gerar um dist (.exe)
 ```
-pyinstaller --add-data="assets:assets" .\src\main.py
+pyinstaller --add-data=".\_internal\assets:assets" --add-data=".\_internal\diffs:diffs" .\src\main.py
 ```
 
 <br>
