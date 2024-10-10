@@ -15,7 +15,7 @@ class MainWindow(QWidget):
         self.setGeometry(100, 100, 400, 300)
         
         # Set application icon
-        self.setWindowIcon(QIcon('src\\assets\\file.svg'))
+        self.setWindowIcon(QIcon('_internal\\assets\\file.svg'))
 
         layout = QVBoxLayout() 
         self.tabs = QTabWidget()

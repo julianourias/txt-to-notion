@@ -25,7 +25,7 @@ class NotionFileCreatorWidget(QWidget):
         self.refresh_folders_button = QPushButton()
         
         # Set button Icon
-        folder_icon = QIcon(QPixmap("src\\assets\\refresh.svg"))
+        folder_icon = QIcon(QPixmap("_internal\\assets\\refresh.svg"))
         self.refresh_folders_button.setIcon(folder_icon)
         self.refresh_folders_button.setFixedWidth(30)
         self.refresh_folders_button.clicked.connect(self._populate_path_dropdown)

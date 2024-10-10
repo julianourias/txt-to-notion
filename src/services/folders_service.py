@@ -3,7 +3,7 @@ import requests
 from repositories.configs_repository import ConfigRepository
 from repositories.folders_repository import FolderRepository
 
-NOTION_API_URL = "https://api.notion.com/v1/"
+NOTION_API_URL = "https://api.notion.com/v1"
 
 
 class FolderService:

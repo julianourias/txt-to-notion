@@ -30,7 +30,7 @@ class ConfigEntryWidget(QWidget):
         self.toggle_visibility_button.setCheckable(True)
         
         # Set button Icon
-        eye_icon = QIcon(QPixmap("src\\assets\\eye.svg"))
+        eye_icon = QIcon(QPixmap("_internal\\assets\\eye.svg"))
         self.toggle_visibility_button.setIcon(eye_icon)
         self.toggle_visibility_button.toggled.connect(self._toggle_password_visibility)
 

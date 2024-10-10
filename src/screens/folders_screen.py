@@ -22,7 +22,7 @@ class AddPastaWidget(QWidget):
         self.open_file_explorer_button = QPushButton()
         
         # Set button Icon
-        folder_icon = QIcon(QPixmap("src\\assets\\folder.svg"))
+        folder_icon = QIcon(QPixmap("_internal\\assets\\folder.svg"))
         self.open_file_explorer_button.setIcon(folder_icon)
         self.open_file_explorer_button.clicked.connect(self._open_file_explorer)
 

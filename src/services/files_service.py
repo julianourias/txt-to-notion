@@ -7,7 +7,7 @@ from repositories.configs_repository import ConfigRepository
 from repositories.files_repository import FileRepository
 from repositories.folders_repository import FolderRepository
 
-NOTION_API_URL = "https://api.notion.com/v1/"
+NOTION_API_URL = "https://api.notion.com/v1"
 
 
 class ServiceFile:
